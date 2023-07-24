@@ -1,0 +1,14 @@
+# Serverless directories
+.serverless/*
+node_modules
+
+# MacOS files
+.DS_Store
+
+# package-lock.json
+# package.json
+
+layer/*
+lambda/*.zip
+code/lambda/*.zip
+code/layer/my_lib.zip

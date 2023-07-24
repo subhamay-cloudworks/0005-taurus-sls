@@ -1,0 +1,71 @@
+service: taurus
+# configValidationMode: error
+# app: 0005-taurus-sls
+# org: subhamayaws
+package:
+  individually: true
+
+frameworkVersion: "^3.25.1"
+configValidationMode: warn
+
+params:
+  devl:
+    kms-key-id: arn:aws:kms:us-east-1:807724355529:key/e4c733c5-9fbe-4a90-bda1-6f0362bc9b89
+
+provider:
+  name: aws
+  stackName: taurus-sls-stack
+  memorySize: 256
+  architecture: x86_64
+  deploymentBucket:
+    name: subhamay-serverless-deploy-us-east-1
+    serverSideEncryption: AES256
+  runtime: python3.9
+  stage: devl
+  region: us-east-1
+  timeout: 30
+  tags: # Function specific tags
+    ProjectName: ${self:service}
+    Environment: ${self:provider.stage}
+
+  iam:
+    role:
+      name: ${self:custom.lambda-iam-role}
+      tags:
+        ProjectName: ${self:service}
+        Environment: ${self:provider.stage}
+
+custom:
+  lambda-function: ${self:service}-demo-layer-lambda-${self:provider.stage}-${self:provider.region}
+  lambda-layer: ${self:service}-demo-layer-${self:provider.stage}-${self:provider.region}
+  lambda-iam-role: ${self:service}-lambda-execution-role
+  project-repo-s3-bucket: "subhamay-projects-repository-us-east-1"
+
+layers:
+  demo:
+    package:
+      artifact: code/layer/my_lib.zip
+    name: ${self:custom.lambda-layer}
+    description: "Taurus Lambda Layer for Demo"
+    compatibleRuntimes:
+      - python3.7
+      - python3.8
+      - python3.9
+    compatibleArchitectures:
+      - x86_64
+      - arm64
+    licenseInfo: Subhamay
+    retain: false
+functions:
+  taurus-lambda:
+    handler: taurus_code.lambda_handler
+    name: ${self:custom.lambda-function}
+    description: "Taurus Lambda Layer Demo"
+    # Reserve a maximum number of concurrent instances (default: account limit)
+    reservedConcurrency: 1
+    package: 
+      artifact: s3://${self:custom.project-repo-s3-bucket}/0005-taurus/code/python/taurus_code.zip
+    layers:
+      - !Ref DemoLambdaLayer
+
+
