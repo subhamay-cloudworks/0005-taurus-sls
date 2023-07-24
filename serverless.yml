@@ -44,7 +44,7 @@ custom:
 layers:
   demo:
     package:
-      artifact: code/layer/my_lib.zip
+      artifact: ./code/layer/my_lib.zip
     name: ${self:custom.lambda-layer}
     description: "Taurus Lambda Layer for Demo"
     compatibleRuntimes:
