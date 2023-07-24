@@ -29,7 +29,7 @@ jobs:
       run: mkdir -p ./code/layer/
 
     - name: Zip the Folder Containing my_lib.py 
-      run: zip -r ./code/layer/my_lib.zip ./code/python/my_lib.py
+      run: cd ./code && zip -r my_lib.zip python/my_lib.py && mv my_lib.zip layer/
 
     - name: Run npm ci 
       run: npm ci
