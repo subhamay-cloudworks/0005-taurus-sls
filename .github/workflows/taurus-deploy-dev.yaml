@@ -34,7 +34,7 @@ jobs:
     - name: Run npm ci 
       run: npm ci
 
-    - name: Deploy Taurus stack to Devlopment
+    - name: Deploy Taurus stack to Development
       uses: serverless/github-action@v3.2
       with:
         args: -c "serverless deploy --stage devl"
